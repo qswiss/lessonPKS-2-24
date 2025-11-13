@@ -45,26 +45,80 @@ class Tour:
             'client': self._client, 
         }
 
-# 2. Класс Client
-# Атрибуты:
-# name — имя клиента;
-# balance — баланс клиента.
+class Client:
+    def __init__(self, name, balance):
+        self.name = name
+        self.balance = balance
 
-# Методы:
-# pay(amount) — уменьшает баланс, если хватает денег;
-# add_balance(amount) — пополнение счёта;
-# info() — возвращает строку с именем и балансом.
+    def pay(self, amount):
+        if self.balance >= amount
+            self.balance -= amount
+            return True
+        else:
+            print(f"{self.name}, недостаточно средств для оплаты {amount} сом")
+            return False
+        
+    def add_balance(self, amount):
+        if amount > 0:
+            self.balance += amount
+            print(f"{self.name} пополнил баланс на {amount} сом")
+        else:
+            print("Сумма должна быть положительной")
+
+    def info(self):
+        return f"Клиент: {self.name}, баланс: {self.balance} сом"
 
 
-# 3. Класс Agency
-# Атрибуты:
-# name — название агентства;
-# tours — список объектов Tour;
-# _income — защищённый атрибут (доход агентства).
 
-# Методы:
-# add_tour(tour) — добавляет новый тур;
-# show_available_tours() — показывает все свободные туры;
-# book_tour(client, tour_id) — бронирует тур для клиента;
-# cancel_all_bookings() — отменяет все активные брони;
-# show_status() — показывает состояние всех туров и текущую выручку.
+class Agency:
+    def __init__(self, name):
+        self.name = name
+        self.tours = []
+        self._income = 0
+
+    def add_tour(self, tour):
+        self.tours.append(tour)
+        print(f"Тур {tour.id} добавлен в агентство {self.name}.")
+
+    def add_tour(self, tour):
+        self.tours.append(tour)
+        print(f"Тур {tour.id} добавлен в агентство {self.name}.")
+
+    def show_available_tours(self):
+        available = [t for t in self.tours if not t._is_booked]
+        if not available:
+            print("Свободных туров нет")
+        else:
+            for t in available:
+                print(f"Тур {tour.id}: {tour.price} сом, {tour._days} дней")
+
+    def book_tour(self, client, tour_id):
+        tour = next((t for t in self.tours if t.id == tour_id), None)
+        if not tour:
+            print(f"Тур с ID {tour_id} не найден")
+            return False
+        if tour._is_booked:
+            print(f"Тур {tour_id} уже забронирован")
+            return False
+        if client.pay(tour.price):
+            tour.book(client.name)
+            self._income += tour.price
+            print(f"Тур {tour_id} успешно забронирован клиентом {client.name}")
+            return True
+        else:
+            print(f"Клиент {client.name} не смог оплатить тур {tour_id}")
+            return False
+        
+    def cancel_all_bookings(self):
+        for t in self.tours:
+            if t._is_booked:
+                t.cancel_booking()
+        print("Все бронирования отменены")
+
+    def show_status(self):
+        print(f"Статус агентства {self.name}:")
+        for t in self.tours:
+            status = "Занят" if t._is_booked else "Свободен"
+            client = t._client if t._client else "-"
+            print(f"Тур {t.id}: {status}, клиент: {client}, цена: {t.price} сом")
+        print(f"Текущая выручка: {self._income} сом")
